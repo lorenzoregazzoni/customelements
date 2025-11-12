@@ -1,0 +1,9 @@
+# Node
+node_modules/
+.parcel-cache/
+dist/
+.npmrc
+
+# Editor
+.vscode/
+.DS_Store

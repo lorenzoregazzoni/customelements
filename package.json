@@ -1,0 +1,20 @@
+{
+  "name": "customelements",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "clean": "rm -rf dist .parcel-cache",
+    "dev": "parcel src/index.html",
+    "prebuild": "pnpm clean && pnpm lint && pnpm format",
+    "build": "parcel build src/index.html",
+    "lint": "biome lint .",
+    "format:biome": "biome format --write .",
+    "format:prettier": "prettier --write \"**/*.{html,css,json}\"",
+    "format": "pnpm format:prettier && pnpm format:biome"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.5",
+    "parcel": "2.16.1",
+    "prettier": "3.6.2"
+  }
+}

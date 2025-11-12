@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>customElements</title>
+    <link rel="stylesheet" href="./styles/index.css" />
+  </head>
+  <body>
+    <main>
+      <h1>customElements playground</h1>
+      <p>Setup con Parcel, Prettier e Biome</p>
+      <button id="app-btn">Clicca</button>
+
+      <section is="mt-accordion" data-color="red">
+        <details name="test">
+          <summary>Section 1</summary>
+          <p>Content for section 1.</p>
+        </details>
+        <details name="test">
+          <summary>Section 2</summary>
+          <p>Content for section 2.</p>
+        </details>
+      </section>
+      <button is="mt-button" size="lg">Button Example</button>
+    </main>
+    <script type="module" src="./scripts/index.js"></script>
+  </body>
+</html>
