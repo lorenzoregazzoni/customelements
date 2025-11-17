@@ -1,4 +1,6 @@
-import { componentDecorator } from "../../core";
+import { Decorator, Utils } from "../../core";
+import accordionCss from 'bundle-text:./accordion.css';
+
 
 export class Accordion extends HTMLElement {
   static extendsElement = "section";
@@ -35,7 +37,9 @@ export class Accordion extends HTMLElement {
   // }
 
   static {
-    componentDecorator(this);
+    Decorator.componentDecorator(this);
+
+    Utils.registerStylesheet(accordionCss);
   }
 }
 

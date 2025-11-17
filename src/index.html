@@ -10,8 +10,6 @@
     <main>
       <h1>customElements playground</h1>
       <p>Setup con Parcel, Prettier e Biome</p>
-      <button id="app-btn">Clicca</button>
-
       <section is="mt-accordion" data-color="red">
         <details name="test">
           <summary>Section 1</summary>
@@ -23,6 +21,17 @@
         </details>
       </section>
       <button is="mt-button" size="lg">Button Example</button>
+      <section>
+        <article is="mt-card">Contenuto della Card 1</article>
+        <article is="mt-card">Contenuto della Card 2</article>
+        <article is="mt-card">Contenuto della Card 3</article>
+        <article is="mt-card">
+          <img src="https://placecats.com/300/200" alt="" />
+          <h2>Titolo della card 4</h2>
+          Contenuto della Card 4
+          <button size="lg">Button Example</button>
+        </article>
+      </section>
     </main>
     <script type="module" src="./scripts/index.js"></script>
   </body>

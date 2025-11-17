@@ -11,6 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.3.5
         version: 2.3.5
+      '@parcel/transformer-inline-string':
+        specifier: 2.16.1
+        version: 2.16.1(@parcel/core@2.16.1(@swc/helpers@0.5.17))
       parcel:
         specifier: 2.16.1
         version: 2.16.1(@swc/helpers@0.5.17)
@@ -382,6 +385,10 @@ packages:
     engines: {node: '>= 16.0.0', parcel: ^2.16.1}
     peerDependencies:
       '@parcel/core': ^2.16.1
+
+  '@parcel/transformer-inline-string@2.16.1':
+    resolution: {integrity: sha512-Cwd+CBOu6xzyTd4yRlPf6CGm542yPQNUBJwCnDF610xKer0fjXMUI+LrqZFmR/Rq09cEuapvlIoVTHXWwHFt8w==}
+    engines: {node: '>= 16.0.0', parcel: ^2.16.1}
 
   '@parcel/transformer-js@2.16.1':
     resolution: {integrity: sha512-GPQ3X9UqrlLDBg06u7rG+IZNT9Kl+7+6gY7qJkrw4If1JnmW5O+xVR8zHe/P+6BvxJnOg0iFqzUueZacYHmHzw==}
@@ -1422,6 +1429,13 @@ snapshots:
       '@parcel/workers': 2.16.1(@parcel/core@2.16.1(@swc/helpers@0.5.17))
       nullthrows: 1.1.1
     transitivePeerDependencies:
+      - napi-wasm
+
+  '@parcel/transformer-inline-string@2.16.1(@parcel/core@2.16.1(@swc/helpers@0.5.17))':
+    dependencies:
+      '@parcel/plugin': 2.16.1(@parcel/core@2.16.1(@swc/helpers@0.5.17))
+    transitivePeerDependencies:
+      - '@parcel/core'
       - napi-wasm
 
   '@parcel/transformer-js@2.16.1(@parcel/core@2.16.1(@swc/helpers@0.5.17))':

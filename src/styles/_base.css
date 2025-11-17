@@ -20,11 +20,3 @@ body {
   line-height: 1.5;
   padding: 2rem;
 }
-
-button {
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #888;
-  background: transparent;
-  cursor: pointer;
-}

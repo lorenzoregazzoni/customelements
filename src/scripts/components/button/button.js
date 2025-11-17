@@ -1,4 +1,5 @@
-import { componentDecorator } from "../../core";
+import { Decorator, Utils } from "../../core";
+import buttonCss from 'bundle-text:./button.css';
 
 export class Button extends HTMLButtonElement {
   static extendsElement = "button";
@@ -31,7 +32,8 @@ export class Button extends HTMLButtonElement {
   // }
 
   static {
-    componentDecorator(this);
+    Decorator.componentDecorator(this);
+    Utils.registerStylesheet(buttonCss);
   }
 }
 

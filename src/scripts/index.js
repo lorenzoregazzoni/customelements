@@ -1,5 +1,3 @@
-import "./_customElementsPolyfill.js"
-
 import './core/index.js';
 import './components/index.js';
 
