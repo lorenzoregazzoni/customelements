@@ -50,6 +50,7 @@ export function componentDecorator(component) {
   // noop??
 
   // register the custom element
+  // TODO: create snake case from component.name
   const isAttribute = component.isAttribute ?? `mt-${component.name.toLowerCase()}`;
   const extendsOptions = { extends: component.extendsElement ?? "div" };
 

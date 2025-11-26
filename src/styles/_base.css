@@ -20,3 +20,28 @@ body {
   line-height: 1.5;
   padding: 2rem;
 }
+
+header {
+  display: flex;
+  place-content: space-between;
+  place-items: center;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+[sr-only] {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+
+  overflow: hidden;
+  white-space: nowrap;
+
+  clip: rect(0, 0, 0, 0);
+}

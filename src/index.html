@@ -7,9 +7,21 @@
     <link rel="stylesheet" href="./styles/index.css" />
   </head>
   <body>
-    <main>
+    <header>
       <h1>customElements playground</h1>
+      <nav>
+        <menu>
+          <a href="#">Home</a>
+          <a href="#">About</a>
+          <a href="#">Services</a>
+          <a href="#">Contact</a>
+        </menu>
+      </nav>
+    </header>
+    <main>
       <p>Setup con Parcel, Prettier e Biome</p>
+
+      <input is="mt-date-picker" name="event-date" type="datetime-local" placeholder="Seleziona una data" aria-label="Seleziona la data dell'evento" />
       <section is="mt-accordion" data-color="red">
         <details name="test">
           <summary>Section 1</summary>

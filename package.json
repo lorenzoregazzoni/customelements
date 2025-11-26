@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "clean": "rm -rf dist .parcel-cache",
+    "predev": "pnpm clean",
     "dev": "parcel src/index.html",
     "prebuild": "pnpm clean && pnpm lint && pnpm format",
     "build": "parcel build src/index.html",

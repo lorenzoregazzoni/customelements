@@ -1,0 +1,25 @@
+label:has([is="mt-date-picker"]) {
+  position: relative;
+
+  display: inline-flex;
+  flex-flow: column nowrap;
+
+  section {
+    position: absolute;
+    bottom: 0;
+    translate: 0 100%;
+    background: white;
+    border: 1px solid black;
+    padding: 5px;
+    display: none;
+  }
+
+  &:has([variant="inline"]){
+    section{
+      position: static;
+      translate: none;
+      display: block;
+    }
+    
+  }
+}
