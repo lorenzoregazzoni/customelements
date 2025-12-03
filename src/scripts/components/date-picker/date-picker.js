@@ -17,7 +17,21 @@ export class DatePicker extends HTMLInputElement {
 
   #label;
   #inputWrapper;
+  #currentMonthSelect;
+  #currentYearInput;
   #calendarSection;
+
+  #value;
+  //#currentMonth;
+  //#currentYear;
+
+  get value() {
+    return this.#value;
+  }
+
+  set value(value) {
+    this.#value = value;
+  }
 
   get variant() {
     return this.getAttribute("variant");
@@ -27,10 +41,28 @@ export class DatePicker extends HTMLInputElement {
     this.setAttribute("variant", value);
   }
 
+  onCurrentMonthChange(e) {
+    this.renderCalendar();
+  }
+
+  onCurrentYearChange(e) {
+    this.renderCalendar();
+  }
+
+  onConnected() {
+    this.#currentMonthSelect.addEventListener("change", this.onCurrentMonthChange.bind(this));
+    this.#currentYearInput.addEventListener("input", this.onCurrentYearChange.bind(this));
+  }
+
+  onDisconnected() {
+    this.#currentMonthSelect.removeEventListener("change", this.onCurrentMonthChange);
+    this.#currentYearInput.removeEventListener("input", this.onCurrentYearChange);
+  }
+
   constructor() {
     super();
 
-    this.type = "datetime-local";
+    this.#value = new Date(this.getAttribute("value") ?? new Date());
 
     // Create calendar component template
     const parser = new DOMParser();
@@ -47,6 +79,12 @@ export class DatePicker extends HTMLInputElement {
     this.#label = this.previousElementSibling;
     this.#inputWrapper = this.#label.querySelector("[input-wrapper]");
     this.#calendarSection = this.#label.querySelector("section");
+    //this.#currentMonth = this.#value.getMonth() + 1;
+    //this.#currentYear = this.#value.getFullYear();
+    this.#currentMonthSelect = this.#calendarSection.querySelector("select");
+    this.#currentMonthSelect.value = (this.#value.getMonth() + 1).toString().padStart(2, "0");
+    this.#currentYearInput = this.#calendarSection.querySelector("input");
+    this.#currentYearInput.value = this.#value.getFullYear().toString();
     this.renderCalendar();
 
 
@@ -59,36 +97,68 @@ export class DatePicker extends HTMLInputElement {
       this.#inputWrapper.setAttribute("sr-only", "");
       this.type = "hidden";
     }
+    else {
+      this.type = "datetime-local";
+    }
   }
 
-  renderCalendar(month = new Date().getMonth() + 1, year = new Date().getFullYear()) {
+  renderCalendar(month = this.#currentMonthSelect.value, year = this.#currentYearInput.value) {
     this.#calendarSection.querySelector("tbody").innerHTML = "";
-    const firstDate = new Date(`${year}-${(month).toString().padStart(2, "0")}-01`);
-    const firstDateOfNextMonth = new Date(`${year}-${(month + 1).toString().padStart(2, "0")}-01`);
+    const firstDate = new Date(`${year}-${(month).toString().padStart(2, "0")}-01T00:00:00`);
+    //const firstDateOfNextMonth = new Date(`${year}-${((month + 1)%12).toString().padStart(2, "0")}-01T00:00:00`);
     const firstDayOfWeek = firstDate.getDay();
-    const daysInMonth = firstDateOfNextMonth.addDays(-1).getDate();
+    let lastDate = new Date(firstDate);
+    lastDate.setMonth(lastDate.getMonth() + 1);
+    console.log({ lastDate });
+    lastDate = lastDate.addDays(-1);
+    const lastDayOfWeek = lastDate.getDay();
+    const firstShownDate = firstDate.addDays(- ((firstDayOfWeek + 6)%7));
+    //const lastShownDate = lastDate.addDays(7 - lastDayOfWeek);
+    const daysInMonth = lastDate.getDate();
 
-    console.log({ firstDate, firstDayOfWeek, daysInMonth });
-    
-    // let date = 1;
-    // for (let i = 0; i < 7; i++) {
-    //   const row = document.createElement("tr");
-    //     for (let j = 0; j < 7; j++) {
-    //         if (i === 0 && j < firstDay) {
-    //             const cell = document.createElement("td");
-    //             cell.textContent = "";
-    //             row.appendChild(cell);
-    //         } else if (date > daysInMonth) {
-    //             break;
-    //         } else {
-    //             const cell = document.createElement("td");
-    //             cell.textContent = date;
-    //             row.appendChild(cell);
-    //             date++;
-    //         }
-    //     }
-    //     this.#calendarSection.querySelector("tbody").appendChild(row);
-    // }
+    console.log({ firstDate, firstDayOfWeek, daysInMonth, lastDate, lastDayOfWeek, firstShownDate });
+     
+    let iteratorDate = new Date(firstShownDate);
+    const renderDates = [];
+
+    while (renderDates.length < 42) {
+      renderDates.push(new Date(iteratorDate));
+      iteratorDate = iteratorDate.addDays(1);
+    }
+    const chunk = (arr, size) =>  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>    arr.slice(i * size, i * size + size)  );
+    const calendarChunks = chunk(renderDates, 7);
+    const calendarItems = calendarChunks.map(week => {
+      const row = document.createElement("tr");
+      row.append(...week.map(date => {
+        const cell = document.createElement("td");
+        cell.innerHTML = `<button>${date.getDate()}</button>`;
+        return cell;
+      }));
+      return row;
+    });
+    this.#calendarSection.querySelector("tbody").append(...calendarItems);
+
+
+     //let date = 1;
+     //for (let i = 0; i < 7; i++) {
+     //  const row = document.createElement("tr");
+     //    for (let j = 0; j < 7; j++) {
+     //        if (i === 0 && j < firstDayOfWeek - 1) {
+     //            const cell = document.createElement("td");
+     //            cell.textContent = "";
+     //            row.appendChild(cell);
+     //        } else if (date > daysInMonth) {
+     //            break;
+     //        } else {
+     //            const cell = document.createElement("td");
+     //            cell.innerHTML = `<button>${date}</button>`;
+     //            row.appendChild(cell);
+     //            date++;
+     //        }
+     //    }
+     //    console.log(row);
+     //    this.#calendarSection.querySelector("tbody").appendChild(row);
+     //}
 
   }
 }
@@ -98,7 +168,7 @@ export class DatePicker extends HTMLInputElement {
 //   <label>
 //     Seleziona la data dell'evento
 //     <span input-wrapper>
-//       <input is="mt-date-picker" name="event-date" type="datetime-local" placeholder="Seleziona una data" />
+//       <input is="mt-date-picker" value="2024-06-01T00:00" name="event-date" type="datetime-local" placeholder="Seleziona una data" />
 //       <i>Cal</i>
 //     </span>
 //     <section>
