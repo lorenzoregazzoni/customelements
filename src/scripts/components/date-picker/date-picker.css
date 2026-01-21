@@ -20,6 +20,36 @@ label:has([is="mt-date-picker"]) {
       translate: none;
       display: block;
     }
-    
   }
+  header{
+    display: flex;
+    gap: .5rem;
+    :where(select, input, button){
+      height: 2.4rem;
+      line-height: 2.4rem;
+      padding: 0 .8rem;
+      /* appearance: none; */
+      border-radius: 4px;
+      border: 1px solid color-mix(in srgb, #505050, #FFFFFF 20%);
+      background: #505050;
+      display: inline-flex;
+      box-sizing: border-box;
+    }
+    input{
+      max-width: 11ch;
+    }
+  }
+  tbody{
+    button{
+      border-radius: 4px;
+      background: lightgrey;
+      color: black;
+      width: 3rem;
+      aspect-ratio: 1;
+      &:not([in-month]){
+        opacity: .5;
+      }
+    }
+  }
+
 }

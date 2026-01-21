@@ -362,8 +362,7 @@
       registry.set(is, Class);
       query.push(selector);
     } else {
-      // biome-ignore lint/complexity/noArguments: <this is needed to make the polyfill work>
-      define.apply(customElements, arguments);
+      define.apply(customElements, [is, Class, options]);
       shadowed.push((selector = is));
     }
 

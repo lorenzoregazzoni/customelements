@@ -20,7 +20,8 @@ export class DatePicker extends HTMLInputElement {
   #currentMonthSelect;
   #currentYearInput;
   #calendarSection;
-
+  #prevMonthButton;
+  #nextMonthButton;
   #value;
   //#currentMonth;
   //#currentYear;
@@ -49,14 +50,50 @@ export class DatePicker extends HTMLInputElement {
     this.renderCalendar();
   }
 
+  goToPrevMonth(e){
+    let currentMonth = this.#currentMonthSelect.value;
+    let currentYear = this.#currentYearInput.value;
+
+    if(currentMonth === '01'){
+      currentMonth = '12';
+      currentYear = (parseInt(currentYear) - 1).toString();
+    } else {
+      currentMonth = (parseInt(currentMonth) - 1).toString().padStart(2, '0');
+    }
+    this.#currentMonthSelect.value = currentMonth;
+    this.#currentYearInput.value = currentYear;
+    this.renderCalendar();
+  }
+
+  goToNextMonth(e){
+    let currentMonth = this.#currentMonthSelect.value;
+    let currentYear = this.#currentYearInput.value;
+
+    if(currentMonth === '12'){
+      currentMonth = '01';
+      currentYear = (parseInt(currentYear) + 1).toString();
+    } else {
+      currentMonth = (parseInt(currentMonth) + 1).toString().padStart(2, '0');
+    }
+    this.#currentMonthSelect.value = currentMonth;
+    this.#currentYearInput.value = currentYear;
+    this.renderCalendar();
+  }
+
   onConnected() {
     this.#currentMonthSelect.addEventListener("change", this.onCurrentMonthChange.bind(this));
     this.#currentYearInput.addEventListener("input", this.onCurrentYearChange.bind(this));
+
+    this.#prevMonthButton.addEventListener("click", this.goToPrevMonth.bind(this));
+    this.#nextMonthButton.addEventListener("click", this.goToNextMonth.bind(this));
   }
 
   onDisconnected() {
     this.#currentMonthSelect.removeEventListener("change", this.onCurrentMonthChange);
     this.#currentYearInput.removeEventListener("input", this.onCurrentYearChange);
+
+    this.#prevMonthButton.removeEventListener("click", this.goToPrevMonth);
+    this.#nextMonthButton.removeEventListener("click", this.goToNextMonth);
   }
 
   constructor() {
@@ -79,14 +116,8 @@ export class DatePicker extends HTMLInputElement {
     this.#label = this.previousElementSibling;
     this.#inputWrapper = this.#label.querySelector("[input-wrapper]");
     this.#calendarSection = this.#label.querySelector("section");
-    //this.#currentMonth = this.#value.getMonth() + 1;
-    //this.#currentYear = this.#value.getFullYear();
-    this.#currentMonthSelect = this.#calendarSection.querySelector("select");
-    this.#currentMonthSelect.value = (this.#value.getMonth() + 1).toString().padStart(2, "0");
-    this.#currentYearInput = this.#calendarSection.querySelector("input");
-    this.#currentYearInput.value = this.#value.getFullYear().toString();
+    this.renderCalendarHeader();
     this.renderCalendar();
-
 
     // Append this (input) into wrapper span
     // this.#inputWrapper.prepend(this);
@@ -96,15 +127,34 @@ export class DatePicker extends HTMLInputElement {
     if (this.variant === "inline") {
       this.#inputWrapper.setAttribute("sr-only", "");
       this.type = "hidden";
-    }
-    else {
+    } else {
       this.type = "datetime-local";
     }
   }
 
+  renderCalendarHeader(){
+    //this.#currentMonth = this.#value.getMonth() + 1;
+    //this.#currentYear = this.#value.getFullYear();
+    this.#currentMonthSelect = this.#calendarSection.querySelector("select");
+    this.#currentMonthSelect.value = (this.#value.getMonth() + 1).toString().padStart(2, "0");
+    this.#currentYearInput = this.#calendarSection.querySelector("input");
+    this.#currentYearInput.value = this.#value.getFullYear().toString();
+
+    this.#prevMonthButton = document.createElement("button");
+    this.#prevMonthButton.innerHTML = '&lt;';
+
+    this.#currentMonthSelect.before(this.#prevMonthButton);
+    
+    this.#nextMonthButton = document.createElement("button");
+    this.#nextMonthButton.innerHTML = '&gt;';
+
+    this.#currentYearInput.after(this.#nextMonthButton);
+  }
+
   renderCalendar(month = this.#currentMonthSelect.value, year = this.#currentYearInput.value) {
+    console.log(month);
     this.#calendarSection.querySelector("tbody").innerHTML = "";
-    const firstDate = new Date(`${year}-${(month).toString().padStart(2, "0")}-01T00:00:00`);
+    const firstDate = new Date(`${year}-${month.toString().padStart(2, "0")}-01T00:00:00`);
     //const firstDateOfNextMonth = new Date(`${year}-${((month + 1)%12).toString().padStart(2, "0")}-01T00:00:00`);
     const firstDayOfWeek = firstDate.getDay();
     let lastDate = new Date(firstDate);
@@ -112,12 +162,19 @@ export class DatePicker extends HTMLInputElement {
     console.log({ lastDate });
     lastDate = lastDate.addDays(-1);
     const lastDayOfWeek = lastDate.getDay();
-    const firstShownDate = firstDate.addDays(- ((firstDayOfWeek + 6)%7));
+    const firstShownDate = firstDate.addDays(-((firstDayOfWeek + 6) % 7));
     //const lastShownDate = lastDate.addDays(7 - lastDayOfWeek);
     const daysInMonth = lastDate.getDate();
 
-    console.log({ firstDate, firstDayOfWeek, daysInMonth, lastDate, lastDayOfWeek, firstShownDate });
-     
+    console.log({
+      firstDate,
+      firstDayOfWeek,
+      daysInMonth,
+      lastDate,
+      lastDayOfWeek,
+      firstShownDate,
+    });
+
     let iteratorDate = new Date(firstShownDate);
     const renderDates = [];
 
@@ -125,41 +182,45 @@ export class DatePicker extends HTMLInputElement {
       renderDates.push(new Date(iteratorDate));
       iteratorDate = iteratorDate.addDays(1);
     }
-    const chunk = (arr, size) =>  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>    arr.slice(i * size, i * size + size)  );
+    const chunk = (arr, size) =>
+      Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+        arr.slice(i * size, i * size + size),
+      );
     const calendarChunks = chunk(renderDates, 7);
-    const calendarItems = calendarChunks.map(week => {
+    const calendarItems = calendarChunks.map((week) => {
       const row = document.createElement("tr");
-      row.append(...week.map(date => {
-        const cell = document.createElement("td");
-        cell.innerHTML = `<button>${date.getDate()}</button>`;
-        return cell;
-      }));
+      row.append(
+        ...week.map((date) => {
+          const isInMonth = firstDate <= date && date <= lastDate;
+          const cell = document.createElement("td");
+          cell.innerHTML = `<button ${isInMonth ? 'in-month' : ''}>${date.getDate()}</button>`;
+          return cell;
+        }),
+      );
       return row;
     });
     this.#calendarSection.querySelector("tbody").append(...calendarItems);
 
-
-     //let date = 1;
-     //for (let i = 0; i < 7; i++) {
-     //  const row = document.createElement("tr");
-     //    for (let j = 0; j < 7; j++) {
-     //        if (i === 0 && j < firstDayOfWeek - 1) {
-     //            const cell = document.createElement("td");
-     //            cell.textContent = "";
-     //            row.appendChild(cell);
-     //        } else if (date > daysInMonth) {
-     //            break;
-     //        } else {
-     //            const cell = document.createElement("td");
-     //            cell.innerHTML = `<button>${date}</button>`;
-     //            row.appendChild(cell);
-     //            date++;
-     //        }
-     //    }
-     //    console.log(row);
-     //    this.#calendarSection.querySelector("tbody").appendChild(row);
-     //}
-
+    //let date = 1;
+    //for (let i = 0; i < 7; i++) {
+    //  const row = document.createElement("tr");
+    //    for (let j = 0; j < 7; j++) {
+    //        if (i === 0 && j < firstDayOfWeek - 1) {
+    //            const cell = document.createElement("td");
+    //            cell.textContent = "";
+    //            row.appendChild(cell);
+    //        } else if (date > daysInMonth) {
+    //            break;
+    //        } else {
+    //            const cell = document.createElement("td");
+    //            cell.innerHTML = `<button>${date}</button>`;
+    //            row.appendChild(cell);
+    //            date++;
+    //        }
+    //    }
+    //    console.log(row);
+    //    this.#calendarSection.querySelector("tbody").appendChild(row);
+    //}
   }
 }
 
