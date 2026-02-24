@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2015", "ES2015.Symbol", "DOM", "DOM.Iterable"],
+    "experimentalDecorators": true,
+    "jsxImportSource": "preact"
+  }
+}

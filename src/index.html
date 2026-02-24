@@ -7,44 +7,31 @@
     <link rel="stylesheet" href="./styles/index.css" />
   </head>
   <body>
-    <header>
-      <h1>customElements playground</h1>
-      <nav>
-        <menu>
-          <a href="#">Home</a>
-          <a href="#">About</a>
-          <a href="#">Services</a>
-          <a href="#">Contact</a>
-        </menu>
-      </nav>
-    </header>
     <main>
-      <p>Setup con Parcel, Prettier e Biome</p>
+      <h1>Lista Todo</h1>
 
-      <input is="mt-date-picker" name="event-date" variant="inline" value="2025-12-28T00:00:00" type="datetime-local" placeholder="Seleziona una data" aria-label="Seleziona la data dell'evento" />
-      <section is="mt-accordion" data-color="red">
-        <details name="test">
-          <summary>Section 1</summary>
-          <p>Content for section 1.</p>
-        </details>
-        <details name="test">
-          <summary>Section 2</summary>
-          <p>Content for section 2.</p>
-        </details>
+      <section aria-labelledby="todo-form-heading">
+        <h2 id="todo-form-heading" class="sr-only">Aggiungi nuovo todo</h2>
+        <form id="todo-form" role="search">
+          <label for="todo-input">Nuovo todo:</label>
+          <input
+            type="text"
+            id="todo-input"
+            placeholder="Scrivi un nuovo todo..."
+            required
+            aria-required="true" />
+          <button type="submit">Aggiungi</button>
+        </form>
       </section>
-      <button is="mt-button" size="lg">Button Example</button>
-      <section>
-        <article is="mt-card">Contenuto della Card 1</article>
-        <article is="mt-card">Contenuto della Card 2</article>
-        <article is="mt-card">Contenuto della Card 3</article>
-        <article is="mt-card">
-          <img src="https://placecats.com/300/200" alt="" />
-          <h2>Titolo della card 4</h2>
-          Contenuto della Card 4
-          <button size="lg">Button Example</button>
-        </article>
+
+      <section aria-labelledby="todo-list-heading">
+        <h2 id="todo-list-heading">Todo attuali</h2>
+        <ul id="todo-list" role="list" aria-live="polite" aria-label="Lista dei todo">
+          <!-- I todo verranno inseriti qui -->
+        </ul>
+        <p id="todo-empty" role="status" aria-live="polite">Nessun todo. Aggiungine uno!</p>
       </section>
     </main>
-    <script type="module" src="./scripts/index.js"></script>
+    <script type="module" src="./scripts/index.ts"></script>
   </body>
 </html>
