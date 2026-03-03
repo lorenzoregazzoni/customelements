@@ -1,3 +1,6 @@
+import "./UI/index.js";
+import "./app/app.ts";
+
 type TodoItem = {
   id: number;
   text: string;
@@ -28,7 +31,7 @@ class TodoList {
   }
 
   addEventListeners() {
-    this.form.addEventListener("submit", (e) => this.addTodo(e));
+    this.form.addEventListener("submit", (e) => {debugger;this.addTodo(e)});
     this.list.addEventListener("change", (e) => {
       const checkbox = e.target as HTMLInputElement;
       if (checkbox.type === "checkbox") {

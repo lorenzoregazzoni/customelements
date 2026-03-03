@@ -93,11 +93,11 @@ button:active {
   background-color: #3d8b40;
 }
 
-#todo-list {
+ul {
   list-style: none;
 }
 
-#todo-list li {
+ul li {
   padding: 12px;
   margin-bottom: 8px;
   background-color: #fafafa;
@@ -109,13 +109,24 @@ button:active {
   transition: background-color 0.2s;
 }
 
-#todo-list li:hover {
+ul li:hover {
   background-color: #f0f0f0;
 }
 
-#todo-empty {
+ul + p {
   text-align: center;
   color: #999;
   padding: 20px;
   font-style: italic;
+}
+
+ul li:has(input[type="checkbox"]:checked) {
+  label {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+}
+
+ul:has(li) + p {
+  display: none;
 }

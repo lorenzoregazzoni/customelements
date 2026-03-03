@@ -1,0 +1,37 @@
+@layer midaticket {
+    @layer components {
+        @layer card {
+            :root {
+                --mt-card--color: inherit;
+                --mt-card--background-color: inherit;
+
+                --mt-card--inline-size: auto;
+                --mt-card--block-size: auto;
+                --mt-card--aspect-ratio: initial;
+
+                --mt-card--padding-inline: 1rem;
+                --mt-card--padding-block: 1rem;
+                --mt-card--border-width: 1px;
+                --mt-card--border-style: solid;
+                --mt-card--border-color: gray;
+                --mt-card--border-radius: 4px;
+            }
+
+            article[is="mt-card"] {
+                color: var(--mt-card--color);
+                background-color: var(--mt-card--background-color);
+
+                inline-size: var(--mt-card--inline-size);
+                block-size: var(--mt-card--block-size);
+                aspect-ratio: var(--mt-card--aspect-ratio);
+
+                padding-inline: var(--mt-card--padding-inline);
+                padding-block: var(--mt-card--padding-block);
+                border-width: var(--mt-card--border-width);
+                border-style: var(--mt-card--border-style);
+                border-color: var(--mt-card--border-color);
+                border-radius: var(--mt-card--border-radius);
+            }
+        }
+    }
+}

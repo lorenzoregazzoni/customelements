@@ -1,5 +1,5 @@
 function toPascalCase(str) {
-  return str.replace(/(^\w|(-|:)\w)/g, (match) => match.replace(/(-|:)/g, "").toUpperCase());
+  return str.replace(/(^\w|-\w)/g, (match) => match.replace("-", "").toUpperCase());
 }
 
 function buildHandlers(attributesOrEvents, methodSuffix = "") {

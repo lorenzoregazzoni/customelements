@@ -14,11 +14,12 @@
     "format": "pnpm format:prettier && pnpm format:biome"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.4",
     "@parcel/config-default": "2.16.4",
+    "@parcel/transformer-inline-string": "2.16.4",
     "@parcel/transformer-typescript-tsc": "2.16.4",
     "@parcel/transformer-typescript-types": "2.16.4",
-    "@biomejs/biome": "2.4.4",
-    "@parcel/transformer-inline-string": "2.16.4",
+    "baseline-browser-mapping": "^2.10.0",
     "parcel": "2.16.4",
     "prettier": "3.8.1",
     "typescript": "5.9.3"

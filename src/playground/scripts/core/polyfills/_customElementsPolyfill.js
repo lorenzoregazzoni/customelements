@@ -101,7 +101,6 @@
       }
     };
 
-    // @ts-ignore
     const mo = new MO((records) => {
       if (query.length) {
         const selectors = query.join(',');
@@ -331,7 +330,6 @@
   customElements.whenDefined = whenDefined;
 
   customElements.upgrade = (element) => {
-    // @ts-ignore
     const is = element.getAttribute('is');
 
     if (is) {

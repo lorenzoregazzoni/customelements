@@ -1,5 +1,5 @@
 import './core/index.js';
-import './components/index.js';
+import './UI/index.js';
 
 document.getElementById("app-btn")?.addEventListener("click", () => {
   // Demo per verificare bundling e linter
