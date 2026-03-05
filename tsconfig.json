@@ -5,6 +5,7 @@
     "moduleResolution": "nodenext",
     "experimentalDecorators": true,
     "jsxImportSource": "preact",
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     "checkJs": true
   }

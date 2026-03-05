@@ -8,11 +8,11 @@ class TodoForm extends HTMLElement {
   static attributes = {};
 
   static events = {
-    "todo:submit": function (event) {
+    "submit": function (event) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      const text = this.#input.value.trim();
+      const text = this.input.value.trim();
 
       if (!text) return;
 
@@ -23,12 +23,7 @@ class TodoForm extends HTMLElement {
         createdAt: new Date(),
       };
 
-      const storedTodos = localStorage.getItem("todos");
-      const todos = storedTodos ? JSON.parse(storedTodos) : [];
-      todos.push(todoItem);
-      localStorage.setItem("todos", JSON.stringify(todos));
-
-      this.#form.reset();
+      this.form.reset();
 
       const customEvent = new CustomEvent("todo:add", { detail: todoItem, bubbles: true });
       this.dispatchEvent(customEvent);
@@ -41,21 +36,21 @@ class TodoForm extends HTMLElement {
     Decorator.componentDecorator(this);
   }
 
-  #form: HTMLFormElement;
-  #input: HTMLInputElement;
+  get form() {
+    return this.querySelector("form")!;
+  }
+
+  get input() {
+    return this.querySelector("input[type='text']")!;
+  }
 
   constructor() {
     super();
+    this.#render();
+  }
+
+  #render() {
     this.innerHTML = todoFormHtml;
-    this.#form = this.querySelector("form")!;
-    this.#input = this.querySelector("input[type='text']")!;
-    this.#form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      this.dispatchEvent(new CustomEvent("todo:submit"));
-      return false;
-    });
   }
 }
 

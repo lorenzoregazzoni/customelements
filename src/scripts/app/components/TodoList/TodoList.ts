@@ -1,5 +1,6 @@
 import { Decorator } from "../../../core/index.js";
 import todoListHtml from "bundle-text:./TodoList.template.html";
+import templateEngine from "../../../core/services/templateEngine.ts";
 
 class TodoList extends HTMLElement {
   static extendsElement = "section";
@@ -12,27 +13,22 @@ class TodoList extends HTMLElement {
     Decorator.componentDecorator(this);
   }
 
-  #ul: HTMLUListElement;
-  #emptyMessage: HTMLParagraphElement;
+  get todos() {
+    return JSON.parse(localStorage.getItem("todos") || "[]");
+  }
 
   constructor() {
     super();
-    this.innerHTML = todoListHtml;
-    this.#ul = this.querySelector("ul");
-    this.#emptyMessage = this.querySelector("p");
+    this.render();
+  }
 
-    const storedTodos = localStorage.getItem("todos");
-    const todos = storedTodos ? JSON.parse(storedTodos) : [];
-
-    for (const todo of todos) {
-        const todoItemHtml = 
-            `<li is="mt-todoitem"
-                data-text="${todo.text}"
-                data-completed="${todo.completed}"
-                data-created-at="${new Date(todo.createdAt).toLocaleString()}">
-            </li>`;
-        this.#ul.insertAdjacentHTML("beforeend", todoItemHtml);
-    }
+  render() {
+    this.innerHTML = templateEngine(todoListHtml, {
+      todos: this.todos.map(todo => ({
+        ...todo,
+        createdAtString: new Date(todo.createdAt).toLocaleString()
+      }))
+    });
   }
 }
 

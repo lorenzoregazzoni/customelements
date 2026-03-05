@@ -1,34 +1,43 @@
 import { Decorator } from "../../../core/index.js";
 import todoItemHtml from "bundle-text:./TodoItem.template.html";
+import templateEngine from "../../../core/services/templateEngine";
 
 class TodoItem extends HTMLLIElement {
   static extendsElement = "li";
 
   static attributes = {};
 
-  static events = {};
+  static events = {
+    click: function (e) {
+      if (e.target instanceof HTMLButtonElement) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        const id = this.dataset.id;
+        const customEvent = new CustomEvent("todo:remove", { detail: id, bubbles: true });
+        this.dispatchEvent(customEvent);
+        this.remove();
+      }
+    },
+    change: function (e) {
+      if (e.target instanceof HTMLInputElement && e.target.type === "checkbox") {
+        const id = this.dataset.id;
+        const customEvent = new CustomEvent("todo:change", { detail: id, bubbles: true });
+        this.dispatchEvent(customEvent);
+      }
+    }
+  };
 
   static {
     Decorator.componentDecorator(this);
   }
 
-  #label: HTMLLabelElement;
-  #input: HTMLInputElement;
-  #dateSpan: HTMLSpanElement;
-  #button: HTMLButtonElement;
-
   constructor() {
     super();
-    this.innerHTML = todoItemHtml;
-    this.#label = this.querySelector("label");
-    this.#input = this.querySelector("input[type='checkbox']");
-    this.#dateSpan = this.querySelector("span");
-    this.#button = this.querySelector("button");
+    this.#render();
+  }
 
-    this.#label.insertAdjacentText("beforeend", this.dataset.text);
-    this.#input.checked = this.dataset.completed === "true";
-    this.#dateSpan.textContent = `Creato: ${this.dataset.createdAt}`;
-    this.#button.setAttribute("aria-label", `Elimina todo: ${this.dataset.text}`);
+  #render() {
+    this.innerHTML = templateEngine(todoItemHtml, this.dataset);
   }
 }
 
