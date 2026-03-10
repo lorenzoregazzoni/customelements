@@ -26,7 +26,8 @@ class TodoList extends HTMLElement {
     this.innerHTML = templateEngine(todoListHtml, {
       todos: this.todos.map(todo => ({
         ...todo,
-        createdAtString: new Date(todo.createdAt).toLocaleString()
+        createdAtString: new Date(todo.createdAt).toISOString(),
+        updateAtString: new Date(todo.updatedAt).toISOString()
       }))
     });
   }

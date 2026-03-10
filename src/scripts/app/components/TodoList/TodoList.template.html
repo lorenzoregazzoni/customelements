@@ -1,12 +1,13 @@
 <h2>Todo attuali</h2>
 <ul role="list" aria-live="polite" aria-label="Lista dei todo">
   <for each="todo in todos">
-    <li is="mt-todoitem"
-        data-id="{{todo.id}}"
-        data-text="{{todo.text}}"
-        data-completed="{{todo.completed}}"
-        data-created-at="{{todo.createdAtString}}">
-    </li>
+    <li
+      is="mt-todoitem"
+      data-id="{{todo.id}}"
+      data-text="{{todo.text}}"
+      data-completed="{{todo.completed}}"
+      data-created-at="{{todo.createdAtString}}"
+      data-updated-at="{{todo.updateAtString}}"></li>
   </for>
 </ul>
 <p role="status" aria-live="polite">Nessun todo. Aggiungine uno!</p>

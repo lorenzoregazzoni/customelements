@@ -21,6 +21,7 @@ class TodoForm extends HTMLElement {
         text: text,
         completed: false,
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       this.form.reset();

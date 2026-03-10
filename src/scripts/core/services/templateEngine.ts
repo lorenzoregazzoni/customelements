@@ -1,24 +1,24 @@
 /**
-* Escape HTML special characters to prevent XSS
-* @param {string} text - Text to escape
-* @returns {string} - Escaped text
-*/
+ * Escape HTML special characters to prevent XSS
+ * @param {string} text - Text to escape
+ * @returns {string} - Escaped text
+ */
 export function escapeHtml(text) {
-  if (text == null) return '';
+  if (text == null) return "";
   const str = String(text);
   const htmlEscapes = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
   };
-  return str.replace(/[&<>"']/g, char => htmlEscapes[char]);
+  return str.replace(/[&<>"']/g, (char) => htmlEscapes[char]);
 }
 
 /**
-* Process <for each="[index, ]item in items">...</for> loops
-*/
+ * Process <for each="[index, ]item in items">...</for> loops
+ */
 function processForLoops(template, data) {
   const forRegex = /<for\s+each="(?:(\w+),\s*)?(\w+)\s+in\s+(\w+)">([\s\S]*?)<\/for>/g;
 
@@ -26,14 +26,14 @@ function processForLoops(template, data) {
     const array = data[arrayKey];
 
     if (!Array.isArray(array)) {
-      return '';
+      return "";
     }
 
     return array
       .map((item, index) => {
         const loopData = {
           ...data,
-          [itemVar]: item
+          [itemVar]: item,
         };
 
         if (indexVar) {
@@ -43,13 +43,13 @@ function processForLoops(template, data) {
         // Recursively process nested templates
         return templateEngine(content, loopData);
       })
-      .join('');
+      .join("");
   });
 }
 
 /**
-* Process <if condition="...">...</if>[<else>...</else>] blocks
-*/
+ * Process <if condition="...">...</if>[<else>...</else>] blocks
+ */
 function processConditionals(template, data) {
   // Process if/else blocks: <if condition="...">...</if><else>...</else>
   const ifElseRegex = /<if\s+condition="([^"]+)">([\s\S]*?)<\/if>\s*<else>([\s\S]*?)<\/else>/g;
@@ -65,19 +65,19 @@ function processConditionals(template, data) {
 
   result = result.replace(ifRegex, (_match, condition, content) => {
     const conditionResult = evaluateCondition(condition, data);
-    return conditionResult ? templateEngine(content, data) : '';
+    return conditionResult ? templateEngine(content, data) : "";
   });
 
   return result;
 }
 
 /**
-* Evaluate a condition expression against the data context
-*/
+ * Evaluate a condition expression against the data context
+ */
 function evaluateCondition(condition, data) {
   // Handle simple truthy check (single variable or dot notation)
   if (/^[\w.]+$/.test(condition.trim())) {
-    return Boolean(getNestedValue(condition.trim(), data));
+    return /^\s*(true|1|on|yes)\s*$/i.test(getNestedValue(condition.trim(), data));
   }
 
   // Handle negation: !variable or !object.property
@@ -94,23 +94,23 @@ function evaluateCondition(condition, data) {
     const right = parseValue(rightValue.trim(), data);
 
     switch (operator) {
-      case '==':
+      case "==":
         // biome-ignore lint/suspicious/noDoubleEquals: intentional loose equality for template expressions
         return left == right;
-      case '===':
+      case "===":
         return left === right;
-      case '!=':
+      case "!=":
         // biome-ignore lint/suspicious/noDoubleEquals: intentional loose inequality for template expressions
         return left != right;
-      case '!==':
+      case "!==":
         return left !== right;
-      case '<':
+      case "<":
         return left < right;
-      case '>':
+      case ">":
         return left > right;
-      case '<=':
+      case "<=":
         return left <= right;
-      case '>=':
+      case ">=":
         return left >= right;
       default:
         return false;
@@ -118,15 +118,15 @@ function evaluateCondition(condition, data) {
   }
 
   // Handle logical AND: var1 && var2
-  if (condition.includes('&&')) {
-    const parts = condition.split('&&').map(p => p.trim());
-    return parts.every(part => evaluateCondition(part, data));
+  if (condition.includes("&&")) {
+    const parts = condition.split("&&").map((p) => p.trim());
+    return parts.every((part) => evaluateCondition(part, data));
   }
 
   // Handle logical OR: var1 || var2
-  if (condition.includes('||')) {
-    const parts = condition.split('||').map(p => p.trim());
-    return parts.some(part => evaluateCondition(part, data));
+  if (condition.includes("||")) {
+    const parts = condition.split("||").map((p) => p.trim());
+    return parts.some((part) => evaluateCondition(part, data));
   }
 
   // Fallback: treat as variable lookup
@@ -134,11 +134,11 @@ function evaluateCondition(condition, data) {
 }
 
 /**
-* Get a nested value from an object using dot notation
-* e.g., getNestedValue('singer.name', data) returns data.singer.name
-*/
+ * Get a nested value from an object using dot notation
+ * e.g., getNestedValue('singer.name', data) returns data.singer.name
+ */
 function getNestedValue(path, data) {
-  const parts = path.split('.');
+  const parts = path.split(".");
   let value = data;
 
   for (const part of parts) {
@@ -150,8 +150,8 @@ function getNestedValue(path, data) {
 }
 
 /**
-* Parse a value from the condition (string literal, number, or variable reference)
-*/
+ * Parse a value from the condition (string literal, number, or variable reference)
+ */
 function parseValue(value, data) {
   // String literal (single or double quotes)
   if (/^['"].*['"]$/.test(value)) {
@@ -164,26 +164,28 @@ function parseValue(value, data) {
   }
 
   // Boolean literals
-  if (value === 'true') return true;
-  if (value === 'false') return false;
-  if (value === 'null') return null;
-  if (value === 'undefined') return undefined;
+  if (value === "true") return true;
+  if (value === "false") return false;
+  if (value === "null") return null;
+  if (value === "undefined") return undefined;
 
   // Variable reference (supports dot notation)
   return getNestedValue(value, data);
 }
 
 /**
-* Process {{{raw}}} and {{escaped}} expressions
-* - {{{expression}}} - Raw/unescaped output
-* - {{expression}} - HTML-escaped output (safe)
-*/
+ * Process {{{raw}}} and {{escaped}} expressions
+ * - {{{expression}}} - Raw/unescaped output
+ * - {{expression}} - HTML-escaped output (safe)
+ */
 function processExpressions(template, data) {
+  const templateHTML = new DOMParser().parseFromString(template, "text/html");
+
   // First, process raw/unescaped expressions: {{{...}}}
   let result = template.replace(/\{\{\{([^}]+)\}\}\}/g, (_match, expression) => {
     const trimmed = expression.trim();
     const value = getNestedValue(trimmed, data);
-    return value !== undefined ? String(value) : '';
+    return value !== undefined ? String(value) : "";
   });
 
   // Then, process escaped expressions: {{...}}
@@ -207,21 +209,21 @@ function processExpressions(template, data) {
 }
 
 /**
-* Simple template engine for rendering HTML templates
-*
-* Features:
-* - {{placeholder}} - Variable interpolation (auto-escaped)
-* - {{{placeholder}}} - Raw/unescaped variable interpolation
-* - {{object.property}} - Dot notation access
-* - {{condition ? 'trueValue' : 'falseValue'}} - Inline ternary expressions
-* - <for each="index, item in items">...</for> - Loop iteration
-* - <if condition="expression">...</if> - Conditional rendering
-* - <if condition="expression">...</if><else>...</else> - If/else blocks
-*
-* @param {string} template - HTML template string
-* @param {Object} data - Key-value pairs for template rendering
-* @returns {string} - Rendered HTML string
-*/
+ * Simple template engine for rendering HTML templates
+ *
+ * Features:
+ * - {{placeholder}} - Variable interpolation (auto-escaped)
+ * - {{{placeholder}}} - Raw/unescaped variable interpolation
+ * - {{object.property}} - Dot notation access
+ * - {{condition ? 'trueValue' : 'falseValue'}} - Inline ternary expressions
+ * - <for each="index, item in items">...</for> - Loop iteration
+ * - <if condition="expression">...</if> - Conditional rendering
+ * - <if condition="expression">...</if><else>...</else> - If/else blocks
+ *
+ * @param {string} template - HTML template string
+ * @param {Object} data - Key-value pairs for template rendering
+ * @returns {string} - Rendered HTML string
+ */
 export function templateEngine(template, data = {}) {
   let result = template;
 
@@ -238,4 +240,3 @@ export function templateEngine(template, data = {}) {
 }
 
 export default templateEngine;
- 

@@ -1,6 +1,6 @@
 import { Decorator } from "../../../core/index.js";
-import todoItemHtml from "bundle-text:./TodoItem.template.html";
 import templateEngine from "../../../core/services/templateEngine";
+import todoItemHtml from "bundle-text:./TodoItem.template.html";
 
 class TodoItem extends HTMLLIElement {
   static extendsElement = "li";
@@ -24,7 +24,7 @@ class TodoItem extends HTMLLIElement {
         const customEvent = new CustomEvent("todo:change", { detail: id, bubbles: true });
         this.dispatchEvent(customEvent);
       }
-    }
+    },
   };
 
   static {
@@ -34,10 +34,17 @@ class TodoItem extends HTMLLIElement {
   constructor() {
     super();
     this.#render();
+
+    self.addEventListener("dom:mutation", (e) => {
+      if (e.detail.target === this && e.detail.type === "attributes") {
+        this.#render();
+      }
+    });
   }
 
   #render() {
-    this.innerHTML = templateEngine(todoItemHtml, this.dataset);
+    const todoItemHtmlTemp = todoItemHtml.replaceAll('=""', "");
+    this.innerHTML = templateEngine(todoItemHtmlTemp, this.dataset);
   }
 }
 

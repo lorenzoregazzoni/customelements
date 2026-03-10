@@ -3,4 +3,5 @@ export type TodoItem = {
   text: string;
   completed: boolean;
   createdAt: Date;
+  updatedAt: Date;
 };
