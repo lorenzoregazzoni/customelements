@@ -2,7 +2,7 @@ import { Store } from "../core/services/store.ts";
 import { domObserver } from "../core/services/domObserver.ts";
 
 import { Decorator, Utils } from "../core/index.js";
-import { TodoItem } from "../app.types.ts";
+import { TodoItem } from "./app.types.ts";
 import "./components/index.ts";
 
 import appCss from "bundle-text:./app.css";
@@ -17,17 +17,13 @@ export class App extends HTMLElement {
     "todo:add": function (event: CustomEvent) {
       const todoItem = event.detail;
 
-      const todos = this.todos;
-      todos.push(todoItem);
-      // this.todos = todos;
-
-      // this.#todoList.render();
+      this._store.todos = new Array(todoItem, ...this._store.todos);
 
       console.log("Todo item added:", todoItem);
     },
     "todo:update": function (event: CustomEvent) {
       const updatedTodo = event.detail;
-      const todos = this.todos;
+      const todos = this._store.todos;
       const index = todos.findIndex((t) => t.id === updatedTodo.id);
 
       if (index !== -1) {
@@ -38,15 +34,12 @@ export class App extends HTMLElement {
     },
     "todo:remove": function (event: CustomEvent) {
       const id = event.detail;
-      
-      debugger;
-      this.todos = this.todos.filter((todo) => todo.id !== parseInt(id));
-      
+      this._store.todos = this._store.todos.filter((todo) => todo.id !== parseInt(id));
       console.log("Todo item removed with id:", id);
     },
     "todo:change": function (event: CustomEvent) {
       const id = event.detail;
-      const todos = this.todos;
+      const todos = this._store.todos;
 
       const todoItem = todos.find((t) => t.id === parseInt(id));
 
@@ -64,28 +57,46 @@ export class App extends HTMLElement {
     Utils.registerStylesheet(appCss);
   }
 
-  #todos: TodoItem[] = [];
-  #todoList: HTMLElement;
+  _store: { todos: TodoItem[] } = { todos: [] };
 
-  get todos() {
-    return this.#todos;
-  }
+  async init() {
+    let store = JSON.parse(localStorage.getItem("store") || '{"todos":[]}');
 
-  set todos(todos) {
-    this.#todos = todos;
+    if (store.todos.length === 0) {
+      store.todos = await fetch("https://jsonplaceholder.typicode.com/todos")
+        .then((response) => {
+          return response.json();
+        })
+        .then(async (data) => {
+          return data.map((item) => {
+            return {
+              id: item.id,
+              title: item.title,
+              completed: item.completed,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              createdAtString: new Date().toISOString(),
+              updatedAtString: new Date().toISOString(),
+            };
+          });
+        });
+    }
+    this._store = Store(store, "todosStore");
+
+    localStorage.setItem("store", JSON.stringify(this._store));
+
+    this.innerHTML = appHtml;
+
+    const observer = domObserver(document.querySelector("section[is='mt-app']"));
   }
 
   constructor() {
     super();
 
-    this.innerHTML = appHtml;
-    this.#todos = Store(JSON.parse(localStorage.getItem("todos") || "[]"), "todosStore");
-    this.#todoList = this.querySelector("section[is='mt-todolist']");
-
-    const observer = domObserver(document.querySelector("section[is='mt-app']"));
+    this.init();
 
     self.addEventListener("todosStore", (e) => {
-      localStorage.setItem("todos", JSON.stringify(this.#todos));
+      localStorage.setItem("store", JSON.stringify(this._store));
     });
   }
 }

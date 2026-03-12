@@ -5,10 +5,10 @@
  * @return {String}     The object type
  */
 
-import { emit } from "./emit";
-import { isNumber } from "./types";
-import { isArray } from "./types";
-import { isObject } from "./types";
+import { emit } from "./emit.ts";
+import { isNumber } from "./types.ts";
+import { isArray } from "./types.ts";
+import { isObject } from "./types.ts";
 
 function getHandler(obj, prop, data, storeName, path) {
   if (prop === "__proto__") return;
@@ -86,22 +86,22 @@ function setHandler(obj, prop, value, data, storeName, path) {
         newValue: obj[prop],
       });
 
-    // emit(storeName, {
-    //   // dataSource: data,
-    //   obj,
-    //   path: `${path}`,
-    //   type: "updateArray",
-    //   prop,
-    //   oldValue: oldObj,
-    //   newValue: obj,
-    // });
+      isNaN(parseInt(prop)) && emit(storeName, {
+        // dataSource: data,
+        obj,
+        path: `${path}`,
+        type: "updateArray",
+        prop,
+        oldValue: oldObj,
+        newValue: obj,
+      });
   }
 
   return true;
 }
 
 // * Store delete property handler
-function deletePropertyHandler(obj, prop, path, storeName) {
+function deletePropertyHandler(obj, prop, data, storeName, path) {
   // early returns when the prop requested is the prototype itself
   if (prop === "__proto__") return true;
 
@@ -130,7 +130,6 @@ function storeHandler(data, storeName, path = "") {
   return {
     // TODO: re-proxy sub functions
     apply: function (target, thisArg, args) {
-      debugger;
       const result = target.apply(thisArg, ...args);
       const resultProxy = new Proxy(result, storeHandler(result, storeName));
 
@@ -152,7 +151,7 @@ function storeHandler(data, storeName, path = "") {
       return setHandler(obj, prop, value, data, storeName, path);
     },
     deleteProperty: function (obj, prop) {
-      return deletePropertyHandler(obj, prop, storeName, path);
+      return deletePropertyHandler(obj, prop, data, storeName, path);
     },
   };
 }

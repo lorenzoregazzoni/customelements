@@ -1,7 +1,9 @@
 export type TodoItem = {
   id: number;
-  text: string;
+  title: string;
   completed: boolean;
   createdAt: Date;
   updatedAt: Date;
+  createdAtString: string;
+  updatedAtString: string;
 };

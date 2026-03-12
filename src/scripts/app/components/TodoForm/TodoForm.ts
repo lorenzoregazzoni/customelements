@@ -12,16 +12,18 @@ class TodoForm extends HTMLElement {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      const text = this.input.value.trim();
+      const title = this.input.value.trim();
 
-      if (!text) return;
+      if (!title) return;
 
       const todoItem: TodoItem = {
         id: Date.now(),
-        text: text,
+        title: title,
         completed: false,
         createdAt: new Date(),
         updatedAt: new Date(),
+        createdAtString: new Date().toISOString(),
+        updatedAtString: new Date().toISOString(),
       };
 
       this.form.reset();

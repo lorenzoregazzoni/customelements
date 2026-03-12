@@ -1,4 +1,4 @@
-import { emit } from './emit';
+import { emit } from './emit.ts';
 
 export const domObserver = (targetNode) => {
   // Create an observer instance linked to the callback function

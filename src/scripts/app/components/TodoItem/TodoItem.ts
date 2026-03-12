@@ -1,5 +1,5 @@
 import { Decorator } from "../../../core/index.js";
-import templateEngine from "../../../core/services/templateEngine";
+import templateEngine from "../../../core/services/templateEngine.ts";
 import todoItemHtml from "bundle-text:./TodoItem.template.html";
 
 class TodoItem extends HTMLLIElement {
@@ -35,7 +35,7 @@ class TodoItem extends HTMLLIElement {
     super();
     this.#render();
 
-    self.addEventListener("dom:mutation", (e) => {
+    self.addEventListener("dom:mutation", (e: CustomEvent) => {
       if (e.detail.target === this && e.detail.type === "attributes") {
         this.#render();
       }

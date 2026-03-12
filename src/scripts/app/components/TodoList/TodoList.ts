@@ -13,23 +13,19 @@ class TodoList extends HTMLElement {
     Decorator.componentDecorator(this);
   }
 
-  get todos() {
-    return JSON.parse(localStorage.getItem("todos") || "[]");
-  }
-
   constructor() {
     super();
-    this.render();
+    this.render(JSON.parse(localStorage.getItem("store") || '{"todos":[]}'));
+
+    self.addEventListener("todosStore", (e: CustomEvent) => {
+      //if(e.detail.type === "updateArray") {
+        this.render(e.detail.dataSource);
+      //}
+    });
   }
 
-  render() {
-    this.innerHTML = templateEngine(todoListHtml, {
-      todos: this.todos.map(todo => ({
-        ...todo,
-        createdAtString: new Date(todo.createdAt).toISOString(),
-        updateAtString: new Date(todo.updatedAt).toISOString()
-      }))
-    });
+  render(store) {
+    this.innerHTML = templateEngine(todoListHtml, store);
   }
 }
 
